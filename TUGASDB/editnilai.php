@@ -1,62 +1,66 @@
-<?php 
+<?php
 include "koneksi.php";
-
 $id = $_GET['id'];
-$data = mysqli_query($conn, 
-    "SELECT * FROM tbl_nilai WHERE idNilai='$id'");
-$n = mysqli_fetch_assoc($data);
-?>
 
+$data = mysqli_query($conn, "SELECT * FROM tbl_nilai WHERE id_nilai='$id'");
+$d = mysqli_fetch_array($data);
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Edit Nilai</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="p-4">
 
-<h2 class="mb-4">Edit Nilai Mahasiswa</h2>
+<body class="bg-light">
 
-<form action="proses_editnilai.php" method="POST" class="col-md-6">
+<div class="container mt-4" style="max-width: 700px;">
+    <div class="card shadow-sm">
 
-    <input type="hidden" name="idNilai" value="<?= $n['idNilai']; ?>">
+        <!-- HEADER WARNA GELAP -->
+        <div class="card-header text-white" style="background:#24272b;">
+            <h4 class="mb-0">Edit Nilai</h4>
+        </div>
 
-    <div class="mb-3">
-        <label>Mahasiswa</label>
-        <select name="idMhs" class="form-control" required>
-            <?php
-            $mhs = mysqli_query($conn, "SELECT * FROM tbl_mahasiswa ORDER BY nama ASC");
-            while ($m = mysqli_fetch_array($mhs)){
-                $selected = ($m['idMhs'] == $n['idMhs']) ? "selected" : "";
-                echo "<option value='$m[idMhs]' $selected>$m[nama] - $m[nim]</option>";
-            }
-            ?>
-        </select>
+        <div class="card-body">
+
+            <form action="proses_editnilai.php" method="post">
+
+                <input type="hidden" name="id_nilai" value="<?= $d['id_nilai'] ?>">
+
+                <div class="mb-3">
+                    <label class="form-label">Nilai Angka</label>
+                    <input type="text" name="nilai" value="<?= $d['nilai'] ?>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Nilai Huruf</label>
+                    <input type="text" name="nilaiHuruf" value="<?= $d['nilaiHuruf'] ?>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Kode Matkul</label>
+                    <input type="text" name="kodeMatkul" value="<?= $d['kodeMatkul'] ?>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">NIM</label>
+                    <input type="text" name="nim" value="<?= $d['nim'] ?>" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">NIDN</label>
+                    <input type="text" name="nidn" value="<?= $d['nidn'] ?>" class="form-control" required>
+                </div>
+
+                <button type="submit" class="btn btn-success px-4">Simpan</button>
+                <a href="viewnilai.php" class="btn btn-secondary px-4">Kembali</a>
+
+            </form>
+
+        </div>
     </div>
-
-    <div class="mb-3">
-        <label>Mata Kuliah</label>
-        <select name="idMatkul" class="form-control" required>
-            <?php
-            $matkul = mysqli_query($conn, "SELECT * FROM tbl_matkul ORDER BY namaMatkul ASC");
-            while ($mt = mysqli_fetch_array($matkul)){
-                $selected = ($mt['idMatkul'] == $n['idMatkul']) ? "selected" : "";
-                echo "<option value='$mt[idMatkul]' $selected>$mt[namaMatkul]</option>";
-            }
-            ?>
-        </select>
-    </div>
-
-    <div class="mb-3">
-        <label>Nilai</label>
-        <input type="number" name="nilai" value="<?= $n['nilai']; ?>" 
-               class="form-control" min="0" max="100" required>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Simpan</button>
-    <a href="viewnilai.php" class="btn btn-secondary">Kembali</a>
-
-</form>
+</div>
 
 </body>
 </html>

@@ -1,17 +1,33 @@
-<?php include "koneksi.php"; ?>
+<?php
+include "koneksi.php";
+
+$data = mysqli_query($conn, "
+    SELECT n.*, 
+           m.nama AS namaMahasiswa,
+           mk.namaMatkul,
+           d.nama AS namaDosen
+    FROM tbl_nilai n
+    LEFT JOIN tbl_mahasiswa m ON n.nim = m.nim
+    LEFT JOIN tbl_matkul mk ON n.kodeMatkul = mk.kodeMatkul
+    LEFT JOIN tbl_dosen d ON n.nidn = d.nidn
+    ORDER BY id_nilai ASC
+");
+?>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Data Nilai Mahasiswa</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Data Nilai</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-<body class="p-4">
+
+<body class="bg-light">
 
 <div class="container mt-4">
-    <div class="card shadow">
+    <div class="card shadow-lg">
 
-        <div class="card-header bg-dark text-white">
-            <h4 class="mb-0">Data Nilai Mahasiswa</h4>
+        <!-- HEADER -->
+        <div class="card-header text-white" style="background:#24272b;">
+            <h4 class="mb-0">Data Nilai</h4>
         </div>
 
         <div class="card-body">
@@ -21,63 +37,54 @@
             <table class="table table-bordered table-striped">
                 <thead class="table-dark">
                     <tr>
-                        <th>ID Nilai</th>
-                        <th>Nama Mahasiswa</th>
-                        <th>NIM</th>
-                        <th>Mata Kuliah</th>
-                        <th>Dosen Pengampu</th>
+                        <th>ID</th>
                         <th>Nilai Angka</th>
-                        <th width="150px">Aksi</th>
+                        <th>Nilai Huruf</th>
+                        <th>Mata Kuliah</th>
+                        <th>Mahasiswa</th>
+                        <th>Dosen Pengampu</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                <?php
-                $query = mysqli_query($conn, "
-                    SELECT n.id_nilai,
-                           mhs.nama AS namaMahasiswa,
-                           mhs.nim AS nimMahasiswa,
-                           mk.namaMatkul,
-                           d.nama AS namaDosen,
-                           n.nilai
-                    FROM tbl_nilai n
-                    LEFT JOIN tbl_mahasiswa mhs ON n.nim = mhs.nim
-                    LEFT JOIN tbl_matkul mk ON n.kodeMatkul = mk.kodeMatkul
-                    LEFT JOIN tbl_dosen d ON mk.nidn = d.nidn
-                    ORDER BY n.id_nilai ASC
-                ");
-
-                while($row = mysqli_fetch_array($query)){
-                ?>
+                <?php while ($d = mysqli_fetch_array($data)) { ?>
                     <tr>
-                        <td><?= $row['id_nilai']; ?></td>
-                        <td><?= $row['namaMahasiswa']; ?></td>
-                        <td><?= $row['nimMahasiswa']; ?></td>
-                        <td><?= $row['namaMatkul']; ?></td>
-                        <td><?= $row['namaDosen']; ?></td>
-                        <td><?= $row['nilai']; ?></td>
+                        <td><?= $d['id_nilai'] ?></td>
+                        <td><?= $d['nilai'] ?></td>
+                        <td><?= $d['nilaiHuruf'] ?></td>
 
                         <td>
-                            <a href="editnilai.php?id=<?= $row['id_nilai']; ?>" 
-                               class="btn btn-warning btn-sm">
-                               Edit
-                            </a>
+                            <?= $d['namaMatkul'] ?> 
+                            <br><small class="text-muted"><?= $d['kodeMatkul'] ?></small>
+                        </td>
 
-                            <a href="hapusnilai.php?id=<?= $row['id_nilai']; ?>" 
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('Yakin ingin menghapus nilai ini?');">
-                               Hapus
-                            </a>
+                        <td>
+                            <?= $d['namaMahasiswa'] ?>
+                            <br><small class="text-muted"><?= $d['nim'] ?></small>
+                        </td>
+
+                        <td>
+                            <?= $d['namaDosen'] ?>
+                            <br><small class="text-muted"><?= $d['nidn'] ?></small>
+                        </td>
+
+                        <td>
+                            <a href="editnilai.php?id=<?= $d['id_nilai'] ?>"
+                               class="btn btn-warning btn-sm px-3">Edit</a>
+
+                            <a href="hapusnilai.php?id=<?= $d['id_nilai'] ?>"
+                               onclick="return confirm('Anda yakin ingin menghapus data ini?')"
+                               class="btn btn-danger btn-sm px-3">Hapus</a>
                         </td>
                     </tr>
                 <?php } ?>
                 </tbody>
             </table>
 
-            <a href="menu.php" class="btn btn-secondary">Kembali ke Menu</a>
+            <a href="menu.php" class="btn btn-secondary mt-2">Kembali ke Menu</a>
 
         </div>
-
     </div>
 </div>
 

@@ -1,18 +1,21 @@
-<?php  
+<?php
 include "koneksi.php";
 
-$idNilai   = $_POST['idNilai'];
-$idMhs     = $_POST['idMhs'];
-$idMatkul  = $_POST['idMatkul'];
-$nilai     = $_POST['nilai'];
+$id         = $_POST['id_nilai'];
+$nilai      = $_POST['nilai'];
+$nilaiHuruf = $_POST['nilaiHuruf'];
+$kodeMatkul = $_POST['kodeMatkul'];
+$nim        = $_POST['nim'];
+$nidn       = $_POST['nidn'];
 
-mysqli_query($conn, 
-    "UPDATE tbl_nilai SET 
-        idMhs='$idMhs',
-        idMatkul='$idMatkul',
-        nilai='$nilai'
-    WHERE idNilai='$idNilai'"
-);
+mysqli_query($conn, "UPDATE tbl_nilai SET
+    nilai      = '$nilai',
+    nilaiHuruf = '$nilaiHuruf',
+    kodeMatkul = '$kodeMatkul',
+    nim        = '$nim',
+    nidn       = '$nidn'
+WHERE id_nilai='$id'
+");
 
-header("Location: viewnilai.php");
+header("Location: view_nilai.php");
 ?>

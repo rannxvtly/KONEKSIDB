@@ -1,14 +1,20 @@
 <?php
 include "koneksi.php";
 
-$idMhs     = $_POST['idMhs'];
-$idMatkul  = $_POST['idMatkul'];
-$nilai     = $_POST['nilai'];
+$nilai      = $_POST['nilai'];
+$nilaiHuruf = $_POST['nilaiHuruf'];
+$kodeMatkul = $_POST['kodeMatkul'];
+$nim        = $_POST['nim'];
+$nidn       = $_POST['nidn'];
 
-$query = "INSERT INTO tbl_nilai(idMhs, idMatkul, nilai)
-          VALUES('$idMhs', '$idMatkul', '$nilai')";
+mysqli_query($conn, "INSERT INTO tbl_nilai VALUES(
+    '',
+    '$nilai',
+    '$nilaiHuruf',
+    '$kodeMatkul',
+    '$nim',
+    '$nidn'
+)");
 
-mysqli_query($conn, $query);
-
-header("Location: viewnilai.php");
+header("Location: view_nilai.php");
 ?>
