@@ -1,4 +1,7 @@
 <?php
+session_start();
+//include "blokmhs.php";
+
 $conn = mysqli_connect("localhost", "root", "", "kampus");
 $query = mysqli_query($conn, "SELECT * FROM tbl_mahasiswa");
 ?>
@@ -30,13 +33,17 @@ $query = mysqli_query($conn, "SELECT * FROM tbl_mahasiswa");
     <div class="container-box">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="mb-0">Data Mahasiswa</h3>
-            <a href="tambahmahasiswa.php" class="btn btn-primary">Tambah Mahasiswa</a>
+
+            <?php if ($_SESSION['role'] == "dosen") { ?>
+                <a href="tambahmahasiswa.php" class="btn btn-primary">Tambah Mahasiswa</a>
+            <?php } ?>
         </div>
 
         <table class="table table-bordered table-striped text-center align-middle">
             <thead class="table-dark">
                 <tr>
                     <th>NIM</th>
+                    <th>Foto</th>
                     <th>Nama</th>
                     <th>Prodi</th>
                     <th>Angkatan</th>
@@ -48,16 +55,31 @@ $query = mysqli_query($conn, "SELECT * FROM tbl_mahasiswa");
                 <?php while ($row = mysqli_fetch_assoc($query)) { ?>
                     <tr>
                         <td><?= $row['nim'] ?></td>
+
+                        <!-- FOTO TANPA DEFAULT -->
+                        <td>
+                            <?php if (!empty($row['foto']) && file_exists("foto/" . $row['foto'])) { ?>
+                                <img src="foto/<?= $row['foto'] ?>" alt="Foto Mahasiswa" width="60">
+                            <?php } else { ?>
+                                <span class="text-muted">Belum ada foto</span>
+                            <?php } ?>
+                        </td>
+
                         <td><?= $row['nama'] ?></td>
                         <td><?= $row['prodi'] ?></td>
                         <td><?= $row['angkatan'] ?></td>
                         <td><?= $row['email'] ?></td>
-                        <td>
-                            <a href="editmahasiswa.php?nim=<?= $row['nim'] ?>" class="btn btn-warning btn-sm">Edit</a>
 
-                            <a href="hapusmahasiswa.php?nim=<?= $row['nim'] ?>"
-                               class="btn btn-danger btn-sm"
-                               onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+                        <td>
+                            <?php if ($_SESSION['role'] == "dosen") { ?>
+                                <a href="editmahasiswa.php?nim=<?= $row['nim'] ?>" class="btn btn-warning btn-sm">Edit</a>
+
+                                <a href="hapusmahasiswa.php?nim=<?= $row['nim'] ?>"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+                            <?php } else { ?>
+                                <span class="text-muted">Hanya bisa lihat</span>
+                            <?php } ?>
                         </td>
                     </tr>
                 <?php } ?>

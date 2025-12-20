@@ -1,18 +1,14 @@
 <?php
-session_start();
-
-/* Harus login */
-if (!isset($_SESSION['login_user'])) {
-    header("Location: login.php");
-    exit();
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
 }
 
-/*
- BLOK SEMUA AKSI POST UNTUK MAHASISWA
- (CRUD SELALU PAKE POST)
-*/
-if ($_SESSION['role'] == 'mhs' && $_SERVER['REQUEST_METHOD'] == 'POST') {
-    header("Location: menu.php");
+// Jika bukan mahasiswa, maka boleh CRUD
+if ($_SESSION['role'] == "mhs") {
+    echo "<script>
+            alert('Akses ditolak! Mahasiswa hanya bisa melihat data.');
+            window.location.href = 'menu.php';
+          </script>";
     exit();
 }
 ?>
